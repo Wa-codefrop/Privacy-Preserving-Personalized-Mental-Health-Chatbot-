@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.config import settings
 from app.schemas.system import SystemStatus
 from app.services.dataset_status import count_source_files
-from app.services.system_status import get_database_status
+from app.services.system_status import get_database_status, get_safety_model_status
 
 router = APIRouter(prefix="/system", tags=["system"])
 
@@ -15,4 +15,5 @@ def read_system_status() -> SystemStatus:
         api="online",
         database=get_database_status(),
         dataset={"present": dataset_files > 0, "files": dataset_files},
+        safety_model=get_safety_model_status(),
     )

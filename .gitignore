@@ -17,6 +17,11 @@ venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+var/
+
+# Locally generated model and vector-store artifacts
+/knowledge_base/vector_db/
+ml/results/*.pkl
 
 # Local datasets may contain private or licensed material
 /datasets/**

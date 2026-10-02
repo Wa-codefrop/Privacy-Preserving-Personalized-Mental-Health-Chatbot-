@@ -2,13 +2,13 @@
 
 A dashboard-first research platform for supportive wellbeing conversations and privacy-preserving ML experiments. It is not a medical diagnosis system, clinical decision tool, or therapist replacement.
 
-## Phase 1: Project Foundation
+## Current Phase: Local RAG and Safety Prototype
 
-The initial foundation includes a React + TypeScript dashboard, a FastAPI status API, PostgreSQL, and a Docker Compose development setup. The dashboard reports live API, database, and local dataset availability. Wellbeing and model metrics remain empty until real records and experiments exist.
+The React + TypeScript dashboard remains the primary landing page. The FastAPI service now includes local SQLite multi-turn chat history, a deterministic high-risk phrase intercept, a trained six-class sentiment proxy, optional Chroma retrieval, and optional OpenAI generation. Streamlit is provided as a separate chat client. This remains a local research prototype, not a clinical or production-ready service.
 
 ## Put Your Dataset Here
 
-The expected pipeline input location is **`datasets/raw/`** at the repository root. For a new dataset, place the original file(s) there. Your existing `datasets/Mental Health Conversational AI Training Dataset/` folder can stay where it is while I review it; do not move or rename the originals yet.
+The conventional pipeline input location is **`datasets/raw/`** at the repository root. The supplied files are already in `datasets/Mental Health Conversational AI Training Dataset/`; they can stay there because the build scripts discover the named source files under `datasets/`. Do not move or rename the originals.
 
 For reference, the pipeline input layout is:
 
@@ -16,31 +16,49 @@ For reference, the pipeline input layout is:
 datasets/raw/your_dataset.csv
 ```
 
-Raw and derived dataset contents in every `datasets/` subfolder are excluded from Git, so they will not be committed or pushed. Keep the original files unchanged; we will inspect their schema, labels, license, and sensitivity before preprocessing. Do not share credentials or private records in chat.
+Raw and derived dataset contents in every `datasets/` subfolder are excluded from Git, so they will not be committed or pushed. The scripts read source files locally. Review [the dataset findings](docs/dataset.md) and [grounding boundaries](docs/dataset_grounding.md) before using or redistributing the material.
 
 The API checks for non-hidden files under `datasets/`, excluding the generated `processed/`, `train/`, `validation/`, and `test/` folders. It does not read dataset contents.
 
 ## Run Locally
 
-1. Copy `.env.example` to `.env` and change the local development values if needed.
-2. Start the services:
+Create and activate a virtual environment, then install requirements:
 
-	```bash
-	docker compose up --build
-	```
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-3. Open the dashboard at `http://localhost:5173` and the API docs at `http://localhost:8000/docs`.
+Train the local sentiment proxy and build/evaluate the knowledge index:
 
-For frontend-only development, run `cd frontend && npm install && npm run dev`. It expects the API at `http://localhost:8000/api` by default.
+```bash
+python ml/scripts/train_safety_engine.py
+python ml/scripts/build_knowledge_base.py
+python ml/scripts/evaluate_retrieval.py
+pytest
+```
+
+The first index build downloads the MiniLM model. Set `OPENAI_API_KEY` in a local `.env` only if you explicitly want user messages and retrieved excerpts sent to OpenAI; without a key, the service uses its local fallback.
+
+Start the dashboard, API, PostgreSQL, and optional Streamlit client:
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:5173` for the dashboard, `http://localhost:8000/docs` for the API, and `http://localhost:8501` for Streamlit.
+
+For frontend-only development, run `cd frontend && npm install && npm run dev`. For local API/Streamlit development, use `uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000` and `streamlit run backend/app/ui.py` from the repository root.
 
 ## Planned Phases
 
-1. Project foundation and dataset location
+1. Project foundation and dataset review
 2. Authentication and profiles
 3. Dataset inspection, validation, and preprocessing
 4. Baseline NLP model and evaluation
 5. Dashboard expansion
-6. Assistant and personalization
+6. Local RAG assistant and personalization
 7. Wellbeing tracking and insights
 8. Safety classification
 9. Federated learning
@@ -50,8 +68,11 @@ For frontend-only development, run `cd frontend && npm install && npm run dev`. 
 
 Each phase will be validated, committed, and pushed to the configured GitHub remote separately. Generated metrics will only be shown after they are produced by the actual pipeline.
 
-## Current Limitations
+## Safety and Privacy Limits
 
-- Authentication, conversations, mood tracking, and research models are not implemented yet.
-- Federated learning and differential privacy are planned research components, not active protections in this foundation phase.
-- Local Compose credentials are for development only; production deployment requires managed secrets and additional security review.
+- The trained classifier predicts six undocumented sentiment labels; it is not a validated safety-risk model. Only the explicit keyword intercept has a deterministic high-risk behavior, and it is not exhaustive.
+- Retrieved training conversations/intents are unverified. Similarity is not correctness, and the configured retrieval threshold has not been calibrated with human relevance judgments.
+- SQLite chat history is local but not encrypted or authenticated. Do not expose this prototype to untrusted users or store identifiable records in it.
+- OpenAI is optional. When configured, messages, recent history, and retrieved excerpts leave the machine for provider processing; get appropriate consent and review retention terms.
+- The provided dataset has no verified license/provenance file. Do not redistribute it or make model release claims until its terms and privacy issues are resolved.
+- Federated learning and differential privacy are planned, not active protections. Local Compose credentials are for development only.

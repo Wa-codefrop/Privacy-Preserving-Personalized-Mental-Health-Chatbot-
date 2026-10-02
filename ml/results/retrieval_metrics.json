@@ -1,0 +1,8 @@
+{
+  "collection_documents": 39009,
+  "queries": 200,
+  "recall_at_3_exact_source_pair": 0.91,
+  "mean_reciprocal_rank_at_3_exact_source_pair": 0.6691666666666667,
+  "sample_seed": 42,
+  "note": "Exact-source-pair retrieval check only; not a human relevance or safety evaluation."
+}

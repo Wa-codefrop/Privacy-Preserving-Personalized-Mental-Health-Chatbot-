@@ -1,0 +1,127 @@
+{
+  "dataset": "sentiment_analysis.csv",
+  "task": "six-class sentiment/emotion proxy; not a validated safety-risk model",
+  "source_rows_after_empty_label_filter": 416809,
+  "rows_after_exact_text_label_dedup": 415294,
+  "conflicting_label_text_groups_excluded": 22253,
+  "rows_in_conflicting_label_groups_excluded": 44512,
+  "unique_unambiguous_texts_for_split": 370782,
+  "train_rows": 296625,
+  "test_rows": 74157,
+  "train_test_text_overlap": false,
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "accuracy": 0.9727604946262659,
+  "class_metrics": {
+    "0": {
+      "precision": 0.9766876492294335,
+      "recall": 0.9716259987043835,
+      "f1-score": 0.9741502489716389,
+      "support": 23155.0
+    },
+    "1": {
+      "precision": 0.9692366558255213,
+      "recall": 0.9807573176397708,
+      "f1-score": 0.9749629544098686,
+      "support": 25828.0
+    },
+    "2": {
+      "precision": 0.9701003481466312,
+      "recall": 0.9730895645028759,
+      "f1-score": 0.9715926571633678,
+      "support": 4868.0
+    },
+    "3": {
+      "precision": 0.9735929067077872,
+      "recall": 0.9674391878950392,
+      "f1-score": 0.9705062926313767,
+      "support": 10442.0
+    },
+    "4": {
+      "precision": 0.9764690754789764,
+      "recall": 0.9611441589672194,
+      "f1-score": 0.968746013522133,
+      "support": 7901.0
+    },
+    "5": {
+      "precision": 0.9610456176319836,
+      "recall": 0.9551706571574121,
+      "f1-score": 0.9580991313234543,
+      "support": 1963.0
+    },
+    "accuracy": 0.9727604946262659,
+    "macro avg": {
+      "precision": 0.971188708836722,
+      "recall": 0.9682044808111168,
+      "f1-score": 0.9696762163369731,
+      "support": 74157.0
+    },
+    "weighted avg": {
+      "precision": 0.972787022182135,
+      "recall": 0.9727604946262659,
+      "f1-score": 0.9727516325065849,
+      "support": 74157.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      22498,
+      427,
+      43,
+      111,
+      62,
+      14
+    ],
+    [
+      254,
+      25331,
+      63,
+      89,
+      60,
+      31
+    ],
+    [
+      40,
+      71,
+      4737,
+      15,
+      3,
+      2
+    ],
+    [
+      128,
+      161,
+      21,
+      10102,
+      29,
+      1
+    ],
+    [
+      99,
+      112,
+      15,
+      53,
+      7594,
+      28
+    ],
+    [
+      16,
+      33,
+      4,
+      6,
+      29,
+      1875
+    ]
+  ],
+  "split": {
+    "method": "stratified holdout after text deduplication and conflicting-label exclusion",
+    "test_size": 0.2,
+    "random_state": 42
+  }
+}

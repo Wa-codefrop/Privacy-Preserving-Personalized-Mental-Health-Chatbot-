@@ -4,10 +4,9 @@
 **/.pytest_cache
 frontend/node_modules
 frontend/dist
-datasets/raw
-datasets/processed
-datasets/train
-datasets/validation
-datasets/test
+datasets/
+var
+knowledge_base/vector_db
+ml/results/*.pkl
 .env
 .env.*

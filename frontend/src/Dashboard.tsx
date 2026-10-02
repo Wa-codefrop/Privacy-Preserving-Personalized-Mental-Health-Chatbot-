@@ -8,7 +8,6 @@ import {
   LockKeyhole,
   MessageCircle,
   Network,
-  Search,
   ShieldCheck,
   Sparkles,
 } from 'lucide-react'
@@ -18,16 +17,17 @@ type SystemStatus = {
   api: 'online'
   database: 'connected' | 'disconnected'
   dataset: { present: boolean; files: number }
+  safety_model?: { trained: boolean; accuracy: number | null; macro_f1: number | null; test_rows: number | null }
 }
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api').replace(/\/$/, '')
 
-const navigation: { section: string; items: { label: string; icon: typeof Activity; active?: boolean }[] }[] = [
+const navigation: { section: string; items: { label: string; icon: typeof Activity; active?: boolean; href?: string }[] }[] = [
   {
     section: 'WORKSPACE',
     items: [
       { label: 'Dashboard', icon: Activity, active: true },
-      { label: 'AI assistant', icon: MessageCircle },
+      { label: 'AI assistant', icon: MessageCircle, href: 'http://localhost:8501' },
       { label: 'Wellbeing', icon: HeartPulse },
     ],
   },
@@ -91,24 +91,29 @@ function Dashboard() {
           {navigation.map((group) => (
             <div className="nav-group" key={group.section}>
               <p className="nav-heading">{group.section}</p>
-              {group.items.map(({ label, icon: Icon, active }) => (
-                <button
-                  className={`nav-item${active ? ' is-active' : ''}`}
-                  type="button"
-                  key={label}
-                  disabled={!active}
-                  aria-current={active ? 'page' : undefined}
-                  title={active ? label : `${label} will be available in a later phase`}
-                >
-                  <Icon size={17} strokeWidth={1.8} />
-                  <span>{label}</span>
-                  {active && <span className="nav-current-dot" />}
-                </button>
-              ))}
+              {group.items.map(({ label, icon: Icon, active, href }) => {
+                const content = <><Icon size={17} strokeWidth={1.8} /><span>{label}</span>{active && <span className="nav-current-dot" />}</>
+                return href ? (
+                  <a className="nav-item" href={href} target="_blank" rel="noreferrer" key={label} title={`Open ${label}`}>
+                    {content}
+                  </a>
+                ) : (
+                  <button
+                    className={`nav-item${active ? ' is-active' : ''}`}
+                    type="button"
+                    key={label}
+                    disabled={!active}
+                    aria-current={active ? 'page' : undefined}
+                    title={active ? label : `${label} will be available in a later phase`}
+                  >
+                    {content}
+                  </button>
+                )
+              })}
             </div>
           ))}
         </nav>
-        <div className="sidebar-foot"><span className="build-indicator" /><span>Foundation phase</span><span className="build-version">v0.1</span></div>
+        <div className="sidebar-foot"><span className="build-indicator" /><span>RAG prototype</span><span className="build-version">v0.2</span></div>
       </aside>
 
       <main className="main-panel" id="dashboard">
@@ -116,7 +121,6 @@ function Dashboard() {
           <div className="breadcrumb"><span>Workspace</span><span className="breadcrumb-divider">/</span><strong>Dashboard</strong></div>
           <div className="topbar-actions">
             <span className={`api-pill ${apiUnavailable ? 'is-offline' : ''}`}><span className="status-dot" />{apiLabel}</span>
-            <button className="icon-button" type="button" aria-label="Search" title="Search"><Search size={18} /></button>
             <div className="user-avatar" aria-label="Research workspace">R</div>
           </div>
         </header>
@@ -136,7 +140,7 @@ function Dashboard() {
             <div className="welcome-copy">
               <span className="welcome-kicker">YOUR RESEARCH WORKSPACE</span>
               <h2>{systemStatus?.dataset.present ? 'Your source files are here. Review is the next step.' : 'Built for careful, data-led wellbeing research.'}</h2>
-              <p>File presence does not mean the data has been validated. Personal wellbeing and model metrics will appear only after real records and experiments exist.</p>
+              <p>File presence does not mean the data has been validated. Wellbeing trends await check-ins; model performance comes from the local sentiment proxy.</p>
             </div>
             <div className="welcome-index"><span>01</span><span className="index-rule" /><span>FOUNDATION</span></div>
           </section>
@@ -153,7 +157,8 @@ function Dashboard() {
             </article>
             <article className="metric-card">
               <div className="metric-top"><span className="metric-icon model-icon"><Brain size={17} /></span><span className="metric-label">MODEL EVALUATIONS</span></div>
-              <p className="metric-value metric-muted">Not run</p><p className="metric-note">Metrics will follow a real training run</p>
+              <p className="metric-value">{systemStatus?.safety_model?.trained && systemStatus.safety_model.macro_f1 != null ? `${(systemStatus.safety_model.macro_f1 * 100).toFixed(1)}%` : 'Not run'}</p>
+              <p className="metric-note">{systemStatus?.safety_model?.trained ? 'Macro F1 · sentiment proxy, not safety' : 'Metrics will follow a training run'}</p>
             </article>
             <article className="metric-card">
               <div className="metric-top"><span className="metric-icon privacy-icon"><LockKeyhole size={17} /></span><span className="metric-label">DATABASE</span></div>
@@ -183,7 +188,7 @@ function Dashboard() {
                   <div><strong>Source dataset</strong><span>{systemStatus ? (systemStatus.dataset.present ? 'Files found; schema and license review pending' : 'Place your dataset under datasets/') : 'Checking local dataset folder'}</span></div>
                 </div>
                 <div className="pipeline-connector" />
-                <div className="pipeline-step"><span className="step-marker">02</span><div><strong>Validation & exploration</strong><span>Begins in Phase 3</span></div></div>
+                <div className="pipeline-step"><span className="step-marker">02</span><div><strong>Validation & exploration</strong><span>Structural review complete; preprocessing next</span></div></div>
                 <div className="pipeline-connector" />
                 <div className="pipeline-step"><span className="step-marker">03</span><div><strong>Model experiments</strong><span>Uses measured pipeline outputs</span></div></div>
               </div>

@@ -17,7 +17,7 @@ import './Dashboard.css'
 type SystemStatus = {
   api: 'online'
   database: 'connected' | 'disconnected'
-  dataset: { loaded: boolean; files: number }
+  dataset: { present: boolean; files: number }
 }
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api').replace(/\/$/, '')
@@ -135,8 +135,8 @@ function Dashboard() {
             <div className="welcome-mark"><Activity size={22} /></div>
             <div className="welcome-copy">
               <span className="welcome-kicker">YOUR RESEARCH WORKSPACE</span>
-              <h2>Built for careful, data-led wellbeing research.</h2>
-              <p>Connect your dataset when you are ready. Personal wellbeing and model metrics will appear only after real records exist.</p>
+              <h2>{systemStatus?.dataset.present ? 'Your source files are here. Review is the next step.' : 'Built for careful, data-led wellbeing research.'}</h2>
+              <p>File presence does not mean the data has been validated. Personal wellbeing and model metrics will appear only after real records and experiments exist.</p>
             </div>
             <div className="welcome-index"><span>01</span><span className="index-rule" /><span>FOUNDATION</span></div>
           </section>
@@ -144,8 +144,8 @@ function Dashboard() {
           <section className="metrics-grid" aria-label="Workspace status">
             <article className="metric-card metric-highlight">
               <div className="metric-top"><span className="metric-icon"><Database size={17} /></span><span className="metric-label">RESEARCH DATASET</span><span className="metric-corner"><ArrowUpRight size={15} /></span></div>
-              <p className="metric-value">{systemStatus ? (systemStatus.dataset.loaded ? `${systemStatus.dataset.files} files` : 'Not loaded') : 'Checking'}</p>
-              <p className="metric-note">{systemStatus?.dataset.loaded ? 'Source files detected in the local raw folder' : 'No source files found in datasets/raw/'}</p>
+              <p className="metric-value">{systemStatus ? (systemStatus.dataset.present ? `${systemStatus.dataset.files} files` : 'Not found') : 'Checking'}</p>
+              <p className="metric-note">{systemStatus?.dataset.present ? 'Source files detected under datasets/' : 'No source files found under datasets/'}</p>
             </article>
             <article className="metric-card">
               <div className="metric-top"><span className="metric-icon mood-icon"><HeartPulse size={17} /></span><span className="metric-label">WELLBEING CHECK-INS</span></div>
@@ -175,19 +175,19 @@ function Dashboard() {
             <article className="panel pipeline-panel">
               <div className="panel-heading">
                 <div><p className="panel-overline">RESEARCH PIPELINE</p><h2>Data readiness</h2></div>
-                <span className={`readiness-tag ${systemStatus?.dataset.loaded ? 'is-ready' : ''}`}><span className="status-dot" />{systemStatus?.dataset.loaded ? 'DATA FOUND' : 'AWAITING DATA'}</span>
+                <span className={`readiness-tag ${systemStatus?.dataset.present ? 'is-ready' : ''}`}><span className="status-dot" />{systemStatus?.dataset.present ? 'FILES FOUND' : 'AWAITING DATA'}</span>
               </div>
               <div className="pipeline-steps">
-                <div className={`pipeline-step ${systemStatus?.dataset.loaded ? 'is-complete' : 'is-current'}`}>
-                  <span className="step-marker">{systemStatus?.dataset.loaded ? <ShieldCheck size={14} /> : '01'}</span>
-                  <div><strong>Source dataset</strong><span>{systemStatus ? (systemStatus.dataset.loaded ? `${systemStatus.dataset.files} file(s) detected` : 'Place your dataset in datasets/raw/') : 'Checking local dataset folder'}</span></div>
+                <div className={`pipeline-step ${systemStatus?.dataset.present ? 'is-current' : ''}`}>
+                  <span className="step-marker">01</span>
+                  <div><strong>Source dataset</strong><span>{systemStatus ? (systemStatus.dataset.present ? 'Files found; schema and license review pending' : 'Place your dataset under datasets/') : 'Checking local dataset folder'}</span></div>
                 </div>
                 <div className="pipeline-connector" />
                 <div className="pipeline-step"><span className="step-marker">02</span><div><strong>Validation & exploration</strong><span>Begins in Phase 3</span></div></div>
                 <div className="pipeline-connector" />
                 <div className="pipeline-step"><span className="step-marker">03</span><div><strong>Model experiments</strong><span>Uses measured pipeline outputs</span></div></div>
               </div>
-              <div className="dataset-location"><span className="location-label">LOCAL DROP LOCATION</span><code>datasets/raw/</code><span className="location-note">Raw data is excluded from Git commits.</span></div>
+              <div className="dataset-location"><span className="location-label">LOCAL DATASET ROOT</span><code>datasets/</code><span className="location-note">Dataset files are excluded from Git commits.</span></div>
             </article>
           </section>
 
@@ -198,7 +198,7 @@ function Dashboard() {
             </article>
             <article className="privacy-note">
               <div className="privacy-note-icon"><ShieldCheck size={18} /></div>
-              <div><p className="panel-overline">PRIVACY BY DESIGN</p><h2>Your dataset stays local.</h2><p>Raw dataset files are ignored by Git and mounted read-only for the API. We will review its schema and sensitivity before any processing.</p></div>
+              <div><p className="panel-overline">PRIVACY BY DESIGN</p><h2>Your dataset stays local.</h2><p>Dataset files are ignored by Git and mounted read-only for the API. We will review its schema and sensitivity before any processing.</p></div>
               <span className="privacy-note-rule" />
             </article>
           </section>

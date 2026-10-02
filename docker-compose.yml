@@ -22,7 +22,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-wellbeing}:${POSTGRES_PASSWORD:-wellbeing-local}@postgres:5432/${POSTGRES_DB:-wellbeing}
       CORS_ORIGINS: '["http://localhost:5173"]'
-      RAW_DATASET_DIR: /app/datasets/raw
+      DATASET_DIR: /app/datasets
     volumes:
       - ./datasets:/app/datasets:ro
     ports:

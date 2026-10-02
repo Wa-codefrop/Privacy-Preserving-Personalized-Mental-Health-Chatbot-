@@ -8,10 +8,10 @@ React + TypeScript dashboard
           v
       FastAPI API -------- PostgreSQL
           |
-          +--------------- datasets/raw/ (read-only mount)
+          +--------------- datasets/ (read-only mount)
 ```
 
-The dashboard reads `GET /api/system/status`. The API checks its database connection and counts non-hidden files in the configured raw dataset directory. It does not open or inspect dataset contents.
+The dashboard reads `GET /api/system/status`. The API checks its database connection and counts non-hidden source files under the configured dataset root, excluding generated split/output directories. It does not open or inspect dataset contents.
 
 ## Dataset boundary
 

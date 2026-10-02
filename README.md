@@ -18,7 +18,7 @@ datasets/raw/your_dataset.csv
 
 Raw and derived dataset contents in every `datasets/` subfolder are excluded from Git, so they will not be committed or pushed. Keep the original files unchanged; we will inspect their schema, labels, license, and sensitivity before preprocessing. Do not share credentials or private records in chat.
 
-The API only checks whether non-hidden files exist in `datasets/raw/`; it does not read their contents.
+The API checks for non-hidden files under `datasets/`, excluding the generated `processed/`, `train/`, `validation/`, and `test/` folders. It does not read dataset contents.
 
 ## Run Locally
 

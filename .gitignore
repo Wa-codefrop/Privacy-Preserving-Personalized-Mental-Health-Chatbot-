@@ -1,0 +1,37 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+frontend/.env.*
+!frontend/.env.example
+
+# JavaScript / TypeScript
+node_modules/
+frontend/dist/
+dist/
+*.local
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local datasets may contain private or licensed material
+/datasets/**
+!/datasets/raw/
+!/datasets/raw/.gitkeep
+!/datasets/processed/
+!/datasets/processed/.gitkeep
+!/datasets/train/
+!/datasets/train/.gitkeep
+!/datasets/validation/
+!/datasets/validation/.gitkeep
+!/datasets/test/
+!/datasets/test/.gitkeep
+
+# Local databases and logs
+*.sqlite3
+*.db
+*.log

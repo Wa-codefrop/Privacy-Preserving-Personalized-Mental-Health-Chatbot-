@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-wellbeing}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wellbeing-local}
+      POSTGRES_DB: ${POSTGRES_DB:-wellbeing}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wellbeing} -d ${POSTGRES_DB:-wellbeing}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-wellbeing}:${POSTGRES_PASSWORD:-wellbeing-local}@postgres:5432/${POSTGRES_DB:-wellbeing}
+      CORS_ORIGINS: '["http://localhost:5173"]'
+      RAW_DATASET_DIR: /app/datasets/raw
+    volumes:
+      - ./datasets:/app/datasets:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  frontend_node_modules:

@@ -419,6 +419,135 @@
   background: #768c80;
 }
 
+.mindscape-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 310px);
+  gap: 18px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 20px 18px;
+  border: 1px solid #e4ebdf;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f9fdfb 0%, #eef5ef 100%);
+}
+
+.mindscape-copy h2 {
+  margin: 6px 0 8px;
+  color: #1f332d;
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  line-height: 1.2;
+}
+
+.mindscape-copy p:last-child {
+  margin: 0;
+  color: #62726b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.mindscape-scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 310px);
+  height: 220px;
+  margin-left: auto;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, rgb(214 244 220 / 70%) 0%, rgb(204 228 214 / 25%) 42%, rgb(18 31 27 / 90%) 100%);
+  box-shadow: inset 0 0 35px rgb(255 255 255 / 10%);
+  perspective: 1000px;
+}
+
+.mindscape-ring,
+.mindscape-node,
+.mindscape-core {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.mindscape-ring {
+  border: 1px solid rgb(216 233 210 / 70%);
+  border-radius: 50%;
+  transform: rotateX(68deg) rotateY(20deg);
+  animation: floatOrbit 8s ease-in-out infinite alternate;
+}
+
+.ring-outer {
+  width: 210px;
+  height: 210px;
+}
+
+.ring-mid {
+  width: 150px;
+  height: 150px;
+  animation-delay: 0.6s;
+}
+
+.ring-inner {
+  width: 90px;
+  height: 90px;
+  animation-delay: 1.2s;
+}
+
+.mindscape-core {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1px solid rgb(204 236 187 / 90%);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #d8efc4 0%, #8cb884 42%, #213830 100%);
+  box-shadow: 0 0 28px rgb(170 227 152 / 40%);
+}
+
+.mindscape-core span {
+  font-family: var(--font-mono);
+  color: #ecf7ee;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.mindscape-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d9efb5;
+  box-shadow: 0 0 15px rgb(217 239 181 / 70%);
+}
+
+.node-a {
+  top: 32px;
+  right: 52px;
+}
+
+.node-b {
+  bottom: 38px;
+  left: 50px;
+}
+
+.node-c {
+  top: 52%;
+  right: 24px;
+}
+
+@keyframes floatOrbit {
+  0% {
+    transform: rotateX(68deg) rotateY(18deg) scale(0.98);
+  }
+  100% {
+    transform: rotateX(72deg) rotateY(38deg) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mindscape-ring,
+  .mindscape-node,
+  .mindscape-core {
+    animation: none;
+    transform: none;
+  }
+}
+
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

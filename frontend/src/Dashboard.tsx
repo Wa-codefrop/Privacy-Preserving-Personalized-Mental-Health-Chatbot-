@@ -145,6 +145,25 @@ function Dashboard() {
             <div className="welcome-index"><span>01</span><span className="index-rule" /><span>FOUNDATION</span></div>
           </section>
 
+          <section className="mindscape-showcase" aria-label="Mindscape overview">
+            <div className="mindscape-copy">
+              <p className="eyebrow">MINDSCAPE</p>
+              <h2>Research signals arranged in a calm visual workspace.</h2>
+              <p>Local dataset review, model outputs, and privacy checks sit in one transparent layer so the platform remains explainable and slow-by-design.</p>
+            </div>
+            <div className="mindscape-scene" aria-hidden="true">
+              <div className="mindscape-ring ring-outer" />
+              <div className="mindscape-ring ring-mid" />
+              <div className="mindscape-ring ring-inner" />
+              <div className="mindscape-core">
+                <span>LOCAL</span>
+              </div>
+              <div className="mindscape-node node-a" />
+              <div className="mindscape-node node-b" />
+              <div className="mindscape-node node-c" />
+            </div>
+          </section>
+
           <section className="metrics-grid" aria-label="Workspace status">
             <article className="metric-card metric-highlight">
               <div className="metric-top"><span className="metric-icon"><Database size={17} /></span><span className="metric-label">RESEARCH DATASET</span><span className="metric-corner"><ArrowUpRight size={15} /></span></div>

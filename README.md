@@ -20,6 +20,20 @@ Raw and derived dataset contents in every `datasets/` subfolder are excluded fro
 
 The API checks for non-hidden files under `datasets/`, excluding the generated `processed/`, `train/`, `validation/`, and `test/` folders. It does not read dataset contents.
 
+## Project Quality Gates
+
+Use the repository-level automation to keep the local setup reproducible and the CI contract explicit:
+
+```bash
+make install
+make lint
+make test
+make frontend-build
+make ci
+```
+
+The project also includes a GitHub Actions workflow at `.github/workflows/ci.yml` that runs linting, the backend test suite, and a frontend production build on pushes and pull requests.
+
 ## Run Locally
 
 Create and activate a virtual environment, then install requirements:

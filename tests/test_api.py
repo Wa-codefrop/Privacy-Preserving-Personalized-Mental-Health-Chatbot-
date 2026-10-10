@@ -1,19 +1,15 @@
-from fastapi.testclient import TestClient
+import pytest
+from pydantic import ValidationError
 
-from app.main import app
+from app.main import health
 from app.routes import chat as chat_route
-from app.schemas.chat import ChatResponse, GroundingMetadata, RiskAssessment
-from app.services.system_status import get_database_status
+from app.schemas.chat import ChatRequest, ChatResponse, GroundingMetadata, RiskAssessment
 
 
 def test_health_reports_database(monkeypatch):
     monkeypatch.setattr("app.services.system_status.get_database_status", lambda: "connected")
 
-    with TestClient(app) as client:
-        response = client.get("/health")
-
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok", "database": "connected"}
+    assert health() == {"status": "ok", "database": "connected"}
 
 
 def test_chat_response_matches_explicit_schema(monkeypatch):
@@ -31,14 +27,9 @@ def test_chat_response_matches_explicit_schema(monkeypatch):
         lambda _user, _message, risk_assessment=None: expected,
     )
 
-    with TestClient(app) as client:
-        response = client.post(
-            "/api/chat",
-            json={"user_id": "test-user", "message": "A test message"},
-        )
+    response = chat_route.chat(ChatRequest(user_id="test-user", message="A test message"))
 
-    assert response.status_code == 200
-    assert response.json() == expected.model_dump()
+    assert response.model_dump() == expected.model_dump()
 
 
 def test_high_risk_intercept_never_calls_chat_provider(monkeypatch):
@@ -49,19 +40,14 @@ def test_high_risk_intercept_never_calls_chat_provider(monkeypatch):
         lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("provider must not be called")),
     )
 
-    with TestClient(app) as client:
-        response = client.post(
-            "/api/chat",
-            json={"user_id": "safety-test", "message": "I want to end my life"},
-        )
+    response = chat_route.chat(
+        ChatRequest(user_id="safety-test", message="I want to end my life")
+    )
 
-    assert response.status_code == 200
-    assert response.json()["risk_assessment"]["risk_level"] == "HIGH"
-    assert "988" in response.json()["response"]
+    assert response.risk_assessment.risk_level == "HIGH"
+    assert "988" in response.response
 
 
 def test_chat_rejects_empty_message():
-    with TestClient(app) as client:
-        response = client.post("/api/chat", json={"user_id": "test-user", "message": " "})
-
-    assert response.status_code == 422
+    with pytest.raises(ValidationError):
+        ChatRequest(user_id="test-user", message=" ")

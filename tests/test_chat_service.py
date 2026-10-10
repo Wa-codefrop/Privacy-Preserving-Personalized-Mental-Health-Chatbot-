@@ -35,6 +35,7 @@ def test_insufficient_retrieval_adds_required_note_and_persists_history(tmp_path
 
     assert result.grounding.status == "insufficient_data"
     assert result.response.endswith(INSUFFICIENT_DATA_NOTE)
+    assert INSUFFICIENT_DATA_NOTE == "Note: my training material does not contain verified detail on this specific topic."
     assert len(result.grounding.sources) == 1
     assert [message["role"] for message in db.get_recent_history("local-user", db_path=database)] == ["user", "assistant"]
 

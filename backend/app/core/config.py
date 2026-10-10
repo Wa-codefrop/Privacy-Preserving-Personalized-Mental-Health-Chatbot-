@@ -18,7 +18,21 @@ class Settings(BaseSettings):
     safety_model_dir: Path = PROJECT_ROOT / "ml" / "results"
     session_db_path: Path = PROJECT_ROOT / "var" / "sessions.db"
     max_history_turns: int = 10
-    relevance_threshold: float = 1.2
+    relevance_threshold: float = 0.25
+    generation_backend: str = "local"
+    local_generation_model: str | None = None
+    generation_device: str = "auto"
+    generation_max_new_tokens: int = 180
+    generation_temperature: float = 0.7
+    generation_do_sample: bool = True
+    lora_enabled: bool = False
+    lora_r: int = 8
+    lora_alpha: int = 16
+    lora_target_modules: list[str] = ["q_proj", "v_proj"]
+    require_consent: bool = False
+    privacy_local_only: bool = True
+    privacy_retention_days: int = 30
+    privacy_research_mode: str = "local"
     crisis_resources: str = (
         "If you might act on this now, contact your local emergency service. "
         "In the United States or Canada, call or text 988. Elsewhere, "

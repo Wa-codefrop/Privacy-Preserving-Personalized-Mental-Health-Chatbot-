@@ -1,0 +1,17 @@
+backend: local
+local_model_path: null
+model_family: qwen2.5-1.5b-instruct
+device: auto
+max_new_tokens: 180
+temperature: 0.7
+do_sample: true
+use_lora: false
+lora:
+  r: 8
+  alpha: 16
+  target_modules:
+    - q_proj
+    - v_proj
+notes:
+  - "Generation is local-first and intentionally conservative until a model is validated."
+  - "LoRA and model selection are configuration placeholders for future fine-tuning work."

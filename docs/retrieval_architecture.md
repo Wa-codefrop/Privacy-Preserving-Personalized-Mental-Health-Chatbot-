@@ -9,12 +9,13 @@ Each document is tagged `grounding_status=unverified_training_corpus`. This labe
 ## Query Path
 
 1. A validated user message is checked by the deterministic safety intercept.
-2. The local Chroma collection is queried for at most three records.
-3. Retrieval is insufficient when the collection is missing or empty, the query fails, or the top cosine distance exceeds `RELEVANCE_THRESHOLD`.
-4. Only grounded excerpts are packaged with recent SQLite history for an optional OpenAI request. If `OPENAI_API_KEY` is unset, the service responds without a provider call.
-5. Every retrieved source is returned as metadata; retrieved text is not exposed through the API response.
+2. The local Chroma collection is queried for a larger dense candidate set, then fused with an in-memory BM25-style lexical ranking over the same candidate documents.
+3. Reciprocal-rank fusion combines the dense and lexical rankings before the top three candidates are selected for the final grounded response.
+4. Retrieval is insufficient when the collection is missing or empty, the query fails, or the fused top score falls below the calibrated `RELEVANCE_THRESHOLD` gate.
+5. Only grounded excerpts are packaged with recent SQLite history for an optional OpenAI request. If `OPENAI_API_KEY` is unset, the service responds without a provider call.
+6. Every retrieved source is returned as metadata; retrieved text is not exposed through the API response.
 
-The threshold is a prototype setting, not an empirically calibrated relevance boundary. Distance and exact-match retrieval results do not prove semantic relevance. See `docs/evaluation.md` before interpreting retrieval metrics.
+The threshold is still conservative and intentionally favors abstaining over unsafe over-grounding. Hybrid ranking is an intermediate local search step, not a clinical validation step. See `docs/evaluation.md` before interpreting retrieval metrics.
 
 ## Privacy and Limits
 

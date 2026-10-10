@@ -1,9 +1,10 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Header
 
 from app.core.config import settings
 from app.core.db import clear_history, get_recent_history, initialize_database, save_message
+from app.core.privacy import check_consent
 from app.schemas.chat import ChatRequest, ChatResponse, GroundingMetadata, RiskAssessment
 from app.services.chat_service import conversational_service
 from app.services.safety_service import safety_engine
@@ -13,7 +14,15 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatResponse)
-def chat(request: ChatRequest) -> ChatResponse:
+def chat(
+    request: ChatRequest,
+    consent: str | None = Header(default=None, alias="x-consent"),
+) -> ChatResponse:
+    if settings.require_consent and not check_consent(consent):
+        raise HTTPException(
+            status_code=403,
+            detail="Explicit consent is required before storing or processing this conversation.",
+        )
     assessment = safety_engine.evaluate_risk(request.message)
     if assessment.risk_level == "HIGH":
         crisis_response = (

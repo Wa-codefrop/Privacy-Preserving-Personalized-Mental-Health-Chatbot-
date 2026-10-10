@@ -1,0 +1,8 @@
+require_consent: false
+local_only: true
+retention_days: 30
+allow_external_provider: false
+research_mode: local
+notes:
+  - "This local-only research mode assumes explicit consent is gathered before long-term storage or external processing."
+  - "Differential-privacy and federated-learning experiments remain future work beyond the local prototype."

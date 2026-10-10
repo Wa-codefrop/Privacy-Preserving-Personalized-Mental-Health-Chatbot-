@@ -1,0 +1,16 @@
+diagnosis_patterns:
+  - "you have depression"
+  - "you are bipolar"
+  - "you have anxiety"
+  - "you have ptsd"
+  - "you are psychotic"
+  - "you are schizophrenic"
+
+dosage_patterns:
+  - "take 500mg"
+  - "dose of"
+  - "medication dosage"
+  - "prescription"
+
+notes:
+  - "Keep this list conservative and review it before any user-facing deployment."

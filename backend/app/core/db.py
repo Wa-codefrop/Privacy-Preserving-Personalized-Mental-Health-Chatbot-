@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from app.core.config import settings
+from app.core.privacy import scrub_text
 
 
 def _connect(db_path: Path | str | None = None) -> sqlite3.Connection:
@@ -42,10 +43,11 @@ def save_message(
     if role not in {"user", "assistant"}:
         raise ValueError("role must be 'user' or 'assistant'")
     initialize_database(db_path)
+    scrubbed_content = scrub_text(content)
     with _connect(db_path) as connection:
         connection.execute(
             "INSERT INTO conversations (user_id, role, content) VALUES (?, ?, ?)",
-            (user_id, role, content),
+            (user_id, role, scrubbed_content),
         )
 
 

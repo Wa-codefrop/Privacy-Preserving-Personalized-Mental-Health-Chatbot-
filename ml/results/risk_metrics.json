@@ -1,0 +1,59 @@
+{
+  "dataset": "mental_health_comprehensive.csv",
+  "task": "risk_model",
+  "source_rows_after_empty_label_filter": 200,
+  "rows_after_exact_text_label_dedup": 200,
+  "train_rows": 160,
+  "test_rows": 40,
+  "labels": [
+    0,
+    1
+  ],
+  "accuracy": 0.8,
+  "class_metrics": {
+    "0": {
+      "precision": 0.875,
+      "recall": 0.7,
+      "f1-score": 0.7777777777777778,
+      "support": 20.0
+    },
+    "1": {
+      "precision": 0.75,
+      "recall": 0.9,
+      "f1-score": 0.8181818181818182,
+      "support": 20.0
+    },
+    "accuracy": 0.8,
+    "macro avg": {
+      "precision": 0.8125,
+      "recall": 0.8,
+      "f1-score": 0.797979797979798,
+      "support": 40.0
+    },
+    "weighted avg": {
+      "precision": 0.8125,
+      "recall": 0.8,
+      "f1-score": 0.7979797979797979,
+      "support": 40.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      14,
+      6
+    ],
+    [
+      2,
+      18
+    ]
+  ],
+  "split": {
+    "method": "stratified holdout on suicidal vs non-suicidal text",
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "label_map": {
+    "0": "non-suicide",
+    "1": "suicide"
+  }
+}

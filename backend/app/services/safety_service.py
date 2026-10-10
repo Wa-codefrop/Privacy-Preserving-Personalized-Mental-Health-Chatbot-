@@ -17,13 +17,21 @@ HIGH_RISK_PATTERNS = tuple(
         r"\bend\s+my\s+life\b",
         r"\bwant\s+to\s+die\b",
         r"\bself[ -]harm\b",
+    )
+)
+
+ELEVATED_RISK_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
         r"\babuse\b",
+        r"\bviolence\b",
+        r"\bunsafe\b",
     )
 )
 
 
 class SafetyEngine:
-    """A deterministic keyword intercept plus an explicitly unvalidated sentiment proxy."""
+    """A deterministic crisis gate plus a separate sentiment proxy signal."""
 
     def __init__(self, model_dir: Path | None = None) -> None:
         self.model_dir = model_dir or settings.safety_model_dir
@@ -53,9 +61,16 @@ class SafetyEngine:
                 confidence=1.0,
             )
 
+        if any(pattern.search(message) for pattern in ELEVATED_RISK_PATTERNS):
+            return RiskAssessment(
+                risk_level="ELEVATED",
+                action="non_imminent_abuse_or_violence_disclosure_requires_supportive_follow_up",
+                confidence=0.9,
+            )
+
         if not self.model_available:
             return RiskAssessment(
-                risk_level="CONCERNING",
+                risk_level="ELEVATED",
                 action="sentiment_proxy_unavailable_encourage_human_support",
             )
 
@@ -67,7 +82,7 @@ class SafetyEngine:
 
         if dominant_emotion in {0, 3, 4} and confidence > 0.65:
             return RiskAssessment(
-                risk_level="CONCERNING",
+                risk_level="ELEVATED",
                 action="sentiment_proxy_signal_encourage_support_not_a_risk_diagnosis",
                 dominant_emotion=dominant_emotion,
                 confidence=confidence,

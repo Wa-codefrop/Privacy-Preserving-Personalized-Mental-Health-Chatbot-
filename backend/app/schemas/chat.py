@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class ChatRequest(BaseModel):
     user_id: str = Field(min_length=1, max_length=128)
-    message: str = Field(min_length=1, max_length=8000)
+    message: str = Field(min_length=1, max_length=2000)
 
     @field_validator("user_id", "message")
     @classmethod
@@ -17,7 +17,7 @@ class ChatRequest(BaseModel):
 
 
 class RiskAssessment(BaseModel):
-    risk_level: Literal["LOW", "CONCERNING", "HIGH"]
+    risk_level: Literal["LOW", "ELEVATED", "HIGH"]
     action: str
     dominant_emotion: int | None = None
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)

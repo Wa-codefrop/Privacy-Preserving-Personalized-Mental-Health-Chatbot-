@@ -1,0 +1,11 @@
+emotion:
+  0: sadness
+  1: joy
+  2: love
+  3: anger
+  4: fear
+  5: surprise
+
+notes:
+  - "This mapping is a project default for the sentiment_analysis corpus and should be verified against a 20-row-per-label audit before any public claim."
+  - "The underlying dataset is not a clinical risk label source. It is an emotion-tone proxy only."

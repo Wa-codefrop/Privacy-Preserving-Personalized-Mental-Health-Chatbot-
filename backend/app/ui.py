@@ -28,7 +28,7 @@ if "last_grounding" not in st.session_state:
 with st.sidebar:
     st.header("Session")
     user_id = st.text_input("Local user ID", key="user_id", max_chars=128).strip()
-    risk_colors = {"LOW": "#24804d", "CONCERNING": "#ac7620", "HIGH": "#b4463f"}
+    risk_colors = {"LOW": "#24804d", "ELEVATED": "#ac7620", "HIGH": "#b4463f"}
     risk_color = risk_colors.get(st.session_state.last_risk, "#69756f")
     st.markdown(
         f'<span style="color:{risk_color};font-weight:700">● {st.session_state.last_risk}</span>',

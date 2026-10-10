@@ -33,18 +33,18 @@ def test_unavailable_sentiment_proxy_does_not_claim_low_risk(tmp_path):
 
     assessment = engine.evaluate_risk("I have had a hard week")
 
-    assert assessment.risk_level == "CONCERNING"
+    assert assessment.risk_level == "ELEVATED"
     assert "unavailable" in assessment.action
 
 
-def test_configured_sentiment_proxy_signal_is_labeled_concerning(tmp_path):
+def test_configured_sentiment_proxy_signal_is_labeled_elevated(tmp_path):
     engine = SafetyEngine(model_dir=tmp_path)
     engine.vectorizer = FakeVectorizer()
     engine.classifier = FakeClassifier([0.7, 0.05, 0.05, 0.05, 0.1, 0.05])
 
     assessment = engine.evaluate_risk("A sample message")
 
-    assert assessment.risk_level == "CONCERNING"
+    assert assessment.risk_level == "ELEVATED"
     assert assessment.dominant_emotion == 0
     assert assessment.confidence == 0.7
 
@@ -64,8 +64,13 @@ def test_high_risk_keywords_are_matched_case_insensitively(tmp_path):
         "I want to end my life",
         "I want to die",
         "I might self harm",
-        "I am dealing with abuse",
     ],
 )
 def test_every_configured_high_risk_phrase_is_intercepted(tmp_path, message):
     assert SafetyEngine(model_dir=tmp_path).evaluate_risk(message).risk_level == "HIGH"
+
+
+def test_abuse_disclosure_is_elevated_instead_of_high(tmp_path):
+    assessment = SafetyEngine(model_dir=tmp_path).evaluate_risk("I am dealing with abuse")
+
+    assert assessment.risk_level == "ELEVATED"

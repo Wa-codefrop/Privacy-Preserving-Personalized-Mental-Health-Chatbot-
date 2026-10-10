@@ -1,0 +1,12 @@
+tier_order:
+  - LOW
+  - ELEVATED
+  - HIGH
+
+risk_thresholds:
+  elevated: 0.55
+  high: 0.75
+
+notes:
+  - "Thresholds are placeholders for Phase 2 calibration runs."
+  - "The deterministic crisis gate is authoritative and may never be overridden by a model."
